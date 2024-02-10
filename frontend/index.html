@@ -322,7 +322,7 @@
             const encodedKeyword = encodeURIComponent(this.keyword);
             const encodedDateRange = encodeURIComponent(this.selectedDateRange);
             const encodedSource = encodeURIComponent(this.selectedSource);
-            const url = `http://127.0.0.1:8000/api/search/?keyword=${encodedKeyword}&date_range=${encodedDateRange}&source=${encodedSource}`;
+            const url = `http://0.0.0.0:8000/api/search/?keyword=${encodedKeyword}&date_range=${encodedDateRange}&source=${encodedSource}`;
             console.log(1, url);
             try {
               const response = await fetch(url);
