@@ -1,8 +1,11 @@
+from collections import Counter
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from collector.serializers import GeneralAnalysisSerializer, ArticleSerializer
-from parsers.google_news import get_news_articles, analyze_articles
+from parsers.google_news import get_news_articles
+from parsers.utils import translate_sentiment, analyze_articles
 
 
 @api_view(['GET'])
@@ -14,28 +17,33 @@ def search_articles(request):
 
     keywords, sentiments, patterns = analyze_articles(search_articles)
 
+    all_keywords = [keyword for article_keywords in keywords for keyword in article_keywords]
+    top_trends = Counter(all_keywords).most_common(5)
+    trends = [keyword[0] for keyword in top_trends]
+
+    prediction = trends
+
     general_analysis_data = {
-        "trends": keywords,
-        "general_behavior": sum(sentiments) / len(sentiments) if sentiments else 0,
-        "prediction": "Some prediction here"
+        "trends": trends,
+        "general_behavior": translate_sentiment(sum(sentiments) / len(sentiments) if sentiments else 0),
+        "prediction": prediction,
     }
     general_analysis_serializer = GeneralAnalysisSerializer(general_analysis_data)
 
     serialized_articles = []
-    for article in search_articles:
+    for article, article_keywords, sentiment, pattern in zip(search_articles, keywords, sentiments, patterns):
         article_data = {
             "title": article.get('title', ''),
-            "source": article.get('source', ''),
+            "source": article.get('source', '').get('name', ''),
             "date": article.get('publishedAt', ''),
             "description": article.get('description', ''),
             "short_content": article.get('content', ''),
             "author": article.get('author', ''),
             "link": article.get('url', ''),
-            "keywords": [],
-            "behavior": sentiments[search_articles.index(article)] if search_articles.index(article) < len(
-                sentiments) else 0,
-            "pattern": patterns[search_articles.index(article)] if search_articles.index(article) < len(
-                patterns) else ""
+            "keywords": article_keywords,
+            "pattern": pattern,
+            "behavior": translate_sentiment(sentiments[search_articles.index(article)] if
+                                            search_articles.index(article) < len(sentiments) else 0)
         }
         serialized_article = ArticleSerializer(article_data)
         serialized_articles.append(serialized_article.data)

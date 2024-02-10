@@ -14,22 +14,3 @@ def get_news_articles(keyword: str, date_range: str) -> list:
                                       to=today.strftime('%Y-%m-%d'))
 
     return articles['articles']
-
-
-search_keyword = 'COVID'
-search_date_range = '1 тиждень'
-search_articles = get_news_articles(search_keyword, search_date_range)
-
-keywords, sentiments, patterns = analyze_articles(search_articles)
-
-print("Keywords:")
-for i, kw in enumerate(keywords):
-    print(f"Article {i + 1}: {kw}")
-
-print("\nSentiments:")
-for i, sentiment in enumerate(sentiments):
-    print(f"Article {i + 1}: {sentiment}")
-
-print("\nPatterns:")
-for i, pattern in enumerate(patterns):
-    print(f"Article {i + 1}: {pattern}")

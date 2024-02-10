@@ -11,7 +11,6 @@ class ArticleSerializer(serializers.Serializer):
     link = serializers.URLField()
     keywords = serializers.ListField(child=serializers.CharField())
     behavior = serializers.CharField()
-    pattern = serializers.CharField()
 
 
 class GeneralAnalysisSerializer(serializers.Serializer):

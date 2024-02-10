@@ -64,3 +64,16 @@ def analyze_articles(articles):
         patterns.append(article.get('title'))
 
     return keywords, sentiments, patterns
+
+
+def translate_sentiment(score):
+    if score > 0.5:
+        return "Позитивний"
+    elif score > 0:
+        return "Схвальний"
+    elif score == 0:
+        return "Нейтральний"
+    elif score >= -0.5:
+        return "Негативний"
+    else:
+        return "Дуже поганий"
