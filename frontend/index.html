@@ -1,13 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue.js Search Page</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1287A8;
+    }
+
+    .container {
+      text-align: center;
+      padding-top: 150px;
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+
+    .search-block {
+      width: 60%;
+      margin: 250px auto 0;
+      border-radius: 40px;
+      background-color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-block input, .search-block select, .search-block button {
+      width: 20%;
+    }
+
+    .search-block input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .search-block select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-right: 10px;
+    }
+
+    .search-block button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      background-color: #5e5e5e;
+      cursor: pointer;
+    }
+
+    .search-block button.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="search-block">
+        <img src="./src/assets/logo_hack.png" alt="Логотип" class="logo">
+        <input type="text" v-model="keyword" placeholder="Keyword">
+        <select v-model="selectedSource" @change="changeBackgroundColor">
+          <option value="Google news">Google news</option>
+          <option value="dou">dou</option>
+          <option value="tsn">tsn</option>
+          <option value="test">test</option>
+        </select>
+        <select v-model="selectedDateRange">
+          <option value="1 день">1 день</option>
+          <option value="1 тиждень">1 тиждень</option>
+          <option value="1 місяць">1 місяць</option>
+          <option value="3 місяці">3 місяці</option>
+        </select>
+        <button :class="{ 'disabled': !keyword }" @click="search">Search</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          keyword: '',
+          selectedSource: 'Google news',
+          selectedDateRange: '1 день'
+        };
+      },
+      computed: {
+      },
+      methods: {
+        search() {
+        },
+        changeBackgroundColor() {
+          switch (this.selectedSource) {
+            case 'Google news':
+              document.body.style.backgroundColor = '#D3B53D';
+              break;
+            case 'dou':
+              document.body.style.backgroundColor = '#0C374D';
+              break;
+            case 'tsn':
+              document.body.style.backgroundColor = '#AD2A1A';
+              break;
+            case 'test':
+              document.body.style.backgroundColor = '#93A661';
+              break;
+            default:
+              document.body.style.backgroundColor = '#1287A8';
+          }
+        }
+      }
+    });
+  </script>
+</body>
 </html>
