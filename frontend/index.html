@@ -166,6 +166,9 @@
 
     .trends-list li {
       margin-bottom: 5px;
+      padding: 3px 5px;
+      background: rgba(143, 208, 236, 0.51);
+      border-radius: 5px;
     }
 
     .donut-chart-container {
@@ -178,6 +181,43 @@
       height: 300px;
       margin: 20px auto;
     }
+
+    .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px 0;
+  }
+
+  .card {
+    background-color: rgba(145, 209, 236, 0.51);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card.half {
+    flex: 1 1 30%;
+  }
+
+  .card.full {
+    flex: 1 1 60%;
+  }
+
+  .donut-chart-container {
+    width: 100%;
+    height: auto;
+  }
+
+  .daily-word-usage {
+    width: 100%;
+    height: 350px;
+  }
+
   </style>
 </head>
 <body>
@@ -203,21 +243,29 @@
 
       <div class="search-result" v-if="!loading && articles.length !== 0">
 
-        <div class="general-analyze">
-          <h3>Топ-5 найбільш використованих слів</h3>
+      <div class="card-container">
+        <div class="card half">
+          <h3>Топ-5 найбільш використованих слів разом з введеним:</h3>
           <ul class="trends-list">
             <li v-for="trend in generalArticlesAnalyze.trends" :key="trend">{{ trend }}</li>
           </ul>
-          <p><strong>Кількість знайдених постів за заданим словом:</strong> {{ generalArticlesAnalyze.count }}</p>
+        </div>
+        <div class="card half">
+          <h3>Кількість знайдених постів за заданим словом: <strong>{{ generalArticlesAnalyze.count }}</strong></h3>
+          <h3>Очікувана кількість постів з заданим словом на наступний тиждень: <strong>{{ generalArticlesAnalyze.prediction }}</strong></h3>
+        </div>
+        <div class="card half">
           <div class="donut-chart-container">
-            <p><strong>Загальна статистика настроїв постів:</strong></p>
+            <h3>Загальна статистика настроїв постів:</h3>
             <canvas id="donut-chart"></canvas>
           </div>
-          <p><strong>Очікувана кількість постів з заданим словом на наступний тиждень:</strong> {{ generalArticlesAnalyze.prediction }}</p>
+        </div>
+        <div class="card full">
           <div class="daily-word-usage">
             <canvas id="daily-word-usage-chart"></canvas>
           </div>
         </div>
+      </div>
 
         <div class="each-article-analyze">
           <div class="search-result-item-container">
@@ -225,8 +273,8 @@
               <div class="search-result-item">
                 <a :href="article.link" target="_blank">{{ article.title }}</a>
                 <p>{{ article.description }}</p>
-                <p><strong>Source:</strong> {{ article.source }}</p>
-                <p><strong>Date:</strong> {{ article.date }}</p>
+                <p><strong>Ресурс:</strong> {{ article.source }}</p>
+                <p><strong>Дата:</strong> {{ article.date }}</p>
               </div>
             </div>
           </div>
@@ -288,7 +336,7 @@
 
               this.$nextTick(() => {
                 this.updateDonutChart();
-                this.updateDailyWordUsageChart(); // Оновлення графіка
+                this.updateDailyWordUsageChart();
               });
             } catch (error) {
               console.error('Error fetching data:', error);
