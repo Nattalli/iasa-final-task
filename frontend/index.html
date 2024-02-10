@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
   <style>
-
     html, body, input, select, button {
       font-family: 'Open Sans', sans-serif;
     }
@@ -84,9 +83,44 @@
       align-items: center;
     }
 
-    .search-result-item {
-      margin-bottom: 20px;
-    }
+.search-result-item-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.search-result-row {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  max-width: 300px;
+  margin: 0;
+}
+
+.search-result-item {
+  height: auto;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.search-result-item p {
+  text-align: left;
+  margin: 5px 0;
+}
+
+
 
     .search-result-item a {
       color: #1287A8;
@@ -179,11 +213,15 @@
         </div>
 
         <div class="each-article-analyze">
-          <div class="search-result-item" v-for="article in articles" :key="article.title">
-            <a :href="article.link" target="_blank">{{ article.title }}</a>
-            <p>{{ article.description }}</p>
-            <p><strong>Source:</strong> {{ article.source }}</p>
-            <p><strong>Date:</strong> {{ article.date }}</p>
+          <div class="search-result-item-container">
+            <div class="search-result-row" v-for="(article, index) in articles" :key="index">
+              <div class="search-result-item">
+                <a :href="article.link" target="_blank">{{ article.title }}</a>
+                <p>{{ article.description }}</p>
+                <p><strong>Source:</strong> {{ article.source }}</p>
+                <p><strong>Date:</strong> {{ article.date }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
