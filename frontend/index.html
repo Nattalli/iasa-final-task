@@ -10,6 +10,7 @@
       margin: 0;
       padding: 0;
       background-color: #1287A8;
+      transition: background-color 0.5s ease;
     }
 
     .container {
@@ -31,6 +32,7 @@
       align-items: center;
       justify-content: space-around;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      transition: margin-top 0.5s ease;
     }
 
     .search-block input, .search-block select, .search-block button {
@@ -64,12 +66,56 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+
+    .search-result {
+      margin: 50px auto;
+      width: 60%;
+      padding: 20px;
+      background-color: white;
+      border-radius: 40px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      align-items: center;
+    }
+
+    .search-result-item {
+      margin-bottom: 20px;
+    }
+
+    .search-result-item a {
+      color: #1287A8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .search-result-item a:hover {
+      text-decoration: underline;
+    }
+
+    .search-result-item p {
+      margin: 5px 0;
+    }
+
+    .loader {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 2s linear infinite;
+      margin: 100px auto;
+    }
+
+    .not-found {
+      margin-top: 20px;
+      color: #1287A8;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div id="app">
     <div class="container">
-      <div class="search-block">
+      <div class="search-block" :style="{ 'margin-top': searchBlockMargin }">
         <img src="./src/assets/logo_hack.png" alt="Логотип" class="logo">
         <input type="text" v-model="keyword" placeholder="Keyword">
         <select v-model="selectedSource" @change="changeBackgroundColor">
@@ -86,6 +132,24 @@
         </select>
         <button :class="{ 'disabled': !keyword }" @click="search">Search</button>
       </div>
+
+      <div class="search-result" v-if="!loading && articles.length !== 0" >
+        <div class="search-result-item" v-for="article in articles" :key="article.title">
+          <a :href="article.link" target="_blank">{{ article.title }}</a>
+          <p>{{ article.description }}</p>
+          <p><strong>Source:</strong> {{ article.source }}</p>
+          <p><strong>Date:</strong> {{ article.date }}</p>
+        </div>
+      </div>
+
+      <div v-if="!loading && searchBlockMargin === '50px' && articles.length === 0">
+        <div class="search-result">
+          <p class="not-found">На жаль, по заданому слову нічого не було знайдено.</p>
+          <img src="./src/assets/nothing_found.png" alt="Not Found">
+        </div>
+      </div>
+
+      <div class="loader" v-if="loading"></div>
     </div>
   </div>
 
@@ -97,13 +161,34 @@
         return {
           keyword: '',
           selectedSource: 'Google news',
-          selectedDateRange: '1 день'
+          selectedDateRange: '1 день',
+          articles: [],
+          searchBlockMargin: '250px',
+          loading: false
         };
       },
-      computed: {
-      },
       methods: {
-        search() {
+        async search() {
+          if (this.keyword) {
+            this.loading = true;
+            const encodedKeyword = encodeURIComponent(this.keyword);
+            const encodedDateRange = encodeURIComponent(this.selectedDateRange);
+            const encodedSource = encodeURIComponent(this.selectedSource);
+            const url = `http://127.0.0.1:8000/api/search/?keyword=${encodedKeyword}&date_range=${encodedDateRange}&source=${encodedSource}`;
+            console.log(1, url);
+            try {
+              const response = await fetch(url);
+              const data = await response.json();
+              console.log(data);
+              this.articles = data.each_article_analyze;
+
+              this.searchBlockMargin = '50px';
+              this.loading = false;
+            } catch (error) {
+              console.error('Error fetching data:', error);
+              this.loading = false;
+            }
+          }
         },
         changeBackgroundColor() {
           switch (this.selectedSource) {
