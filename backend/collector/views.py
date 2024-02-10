@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from collector.serializers import GeneralAnalysisSerializer, ArticleSerializer
 from parsers.google_news import get_news_articles
 from parsers.utils import translate_sentiment, analyze_articles
+from statsmodels.tsa.arima.model import ARIMA
 
 
 @api_view(['GET'])
@@ -18,14 +19,37 @@ def search_articles(request):
     keywords, sentiments, patterns = analyze_articles(search_articles)
 
     all_keywords = [keyword for article_keywords in keywords for keyword in article_keywords]
-    top_trends = Counter(all_keywords).most_common(5)
-    trends = [keyword[0] for keyword in top_trends]
+    top_trends = Counter(all_keywords).most_common(6)
+    trends = [keyword[0] for keyword in top_trends if keyword[0] != search_keyword][:5]
 
-    prediction = trends
+    current_count = len(search_articles)
+
+    if current_count <= 5:
+        prediction = 'Less then 5'
+    else:
+        dates = [article.get('publishedAt', '') for article in search_articles]
+        daily_counts = Counter([date.split('T')[0] for date in dates])
+
+        if len(daily_counts.values()) <= 5:
+            prediction = 'Less than 5'
+        else:
+            model = ARIMA(list(daily_counts.values()), order=(5, 1, 0))
+            model_fit = model.fit()
+
+            prediction = int(model_fit.forecast()[0])
+
+    sentiment_counts = Counter(sentiments)
+    total_sentiments = len(sentiments)
+    sentiment_percentages = {translate_sentiment(sentiment): count / total_sentiments * 100 for sentiment, count in
+                             sentiment_counts.items()}
+    total_percentage = sum(sentiment_percentages.values())
+    normalized_sentiment_percentages = {key: value / total_percentage * 100 for key, value in
+                                        sentiment_percentages.items()}
 
     general_analysis_data = {
         "trends": trends,
-        "general_behavior": translate_sentiment(sum(sentiments) / len(sentiments) if sentiments else 0),
+        "general_behavior": normalized_sentiment_percentages,
+        "count": current_count,
         "prediction": prediction,
     }
     general_analysis_serializer = GeneralAnalysisSerializer(general_analysis_data)
