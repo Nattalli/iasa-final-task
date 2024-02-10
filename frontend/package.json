@@ -13,6 +13,7 @@
     "format": "prettier --write src"
   },
   "dependencies": {
+    "chartjs-adapter-date-fns": "^3.0.0",
     "vue": "^3.4.15"
   },
   "devDependencies": {

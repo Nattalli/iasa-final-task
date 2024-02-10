@@ -21,15 +21,9 @@ def calculate_date(today, choice):
     elif choice == '1 тиждень':
         return today - timedelta(weeks=1)
     elif choice == '1 місяць':
-        current_month = today.month
-        current_year = today.year
-        _, days_in_current_month = calendar.monthrange(current_year, current_month)
-        return today.replace(day=1) - timedelta(days=1)
+        return today - timedelta(weeks=4)
     elif choice == '3 місяці':
-        three_months_ago = today.replace(day=1) - timedelta(days=1)
-        for _ in range(2):
-            three_months_ago = three_months_ago.replace(day=1) - timedelta(days=1)
-        return three_months_ago
+        return today - timedelta(weeks=13)
     else:
         return None
 

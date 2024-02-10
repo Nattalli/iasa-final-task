@@ -120,8 +120,6 @@
   margin: 5px 0;
 }
 
-
-
     .search-result-item a {
       color: #1287A8;
       text-decoration: none;
@@ -172,7 +170,13 @@
 
     .donut-chart-container {
       max-width: 300px;
-      margin: 0 auto;
+      margin: 20px auto;
+    }
+
+    .daily-word-usage {
+      width: 60%;
+      height: 300px;
+      margin: 20px auto;
     }
   </style>
 </head>
@@ -210,6 +214,9 @@
             <canvas id="donut-chart"></canvas>
           </div>
           <p><strong>Очікувана кількість постів з заданим словом на наступний тиждень:</strong> {{ generalArticlesAnalyze.prediction }}</p>
+          <div class="daily-word-usage">
+            <canvas id="daily-word-usage-chart"></canvas>
+          </div>
         </div>
 
         <div class="each-article-analyze">
@@ -281,6 +288,7 @@
 
               this.$nextTick(() => {
                 this.updateDonutChart();
+                this.updateDailyWordUsageChart(); // Оновлення графіка
               });
             } catch (error) {
               console.error('Error fetching data:', error);
@@ -330,6 +338,51 @@
                 title: {
                   display: true,
                   text: 'Статистика настроїв'
+                }
+              }
+            });
+          }
+        },
+        updateDailyWordUsageChart() {
+          if (this.generalArticlesAnalyze.daily_word_usage) {
+            const data = this.generalArticlesAnalyze.daily_word_usage;
+            const labels = Object.keys(data);
+            const values = Object.values(data);
+            const ctx = document.getElementById('daily-word-usage-chart').getContext('2d');
+            new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels,
+                datasets: [{
+                  label: 'Використання слова щодня',
+                  data: values,
+                  backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                  borderColor: 'rgba(0, 123, 255, 1)',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  xAxes: [{
+                    ticks: {
+                      autoSkip: true,
+                      maxTicksLimit: 20
+                    }
+                  }],
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                },
+                legend: {
+                  display: false
+                },
+                title: {
+                  display: true,
+                  text: 'Щоденне використання слова'
                 }
               }
             });

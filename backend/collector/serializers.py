@@ -18,3 +18,4 @@ class GeneralAnalysisSerializer(serializers.Serializer):
     general_behavior = serializers.DictField()
     count = serializers.CharField()
     prediction = serializers.CharField()
+    daily_word_usage = serializers.DictField()

@@ -1,11 +1,12 @@
-from collections import Counter
+from collections import Counter, OrderedDict
+from datetime import datetime, timedelta
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from collector.serializers import GeneralAnalysisSerializer, ArticleSerializer
 from parsers.google_news import get_news_articles
-from parsers.utils import translate_sentiment, analyze_articles
+from parsers.utils import translate_sentiment, analyze_articles, calculate_date
 from statsmodels.tsa.arima.model import ARIMA
 
 
@@ -46,11 +47,22 @@ def search_articles(request):
     normalized_sentiment_percentages = {key: value / total_percentage * 100 for key, value in
                                         sentiment_percentages.items()}
 
+    today = datetime.now().date()
+    last_date = calculate_date(today, date_range)
+    date_range = [last_date + timedelta(days=i) for i in range((today - last_date).days + 1)]
+
+    daily_word_usage = OrderedDict()
+    for date in date_range:
+        articles_on_date = [article for article in search_articles if
+                            article.get('publishedAt', '').startswith(str(date))]
+        daily_word_usage[date.strftime('%Y-%m-%d')] = len(articles_on_date)
+
     general_analysis_data = {
         "trends": trends,
         "general_behavior": normalized_sentiment_percentages,
         "count": current_count,
         "prediction": prediction,
+        "daily_word_usage": daily_word_usage,
     }
     general_analysis_serializer = GeneralAnalysisSerializer(general_analysis_data)
 
