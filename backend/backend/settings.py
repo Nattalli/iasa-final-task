@@ -136,3 +136,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATE_CHOICES = ['1 day', '1 week', '1 month', '3 months']
 
 CORS_ALLOW_ALL_ORIGINS = True
+GOOGLE_NEWS_API = os.getenv('NEWS_API_KEY')

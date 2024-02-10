@@ -1,10 +1,11 @@
 from datetime import datetime
 
-from parsers.utils import calculate_date, analyze_articles
+from backend.settings import GOOGLE_NEWS_API
+from parsers.utils import calculate_date
 from newsapi import NewsApiClient
 
 
-newsapi = NewsApiClient(api_key="d0d2b6eb585641d4a15a6bc59b8fa46c")
+newsapi = NewsApiClient(api_key=GOOGLE_NEWS_API)
 
 
 def get_news_articles(keyword: str, date_range: str) -> list:
