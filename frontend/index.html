@@ -110,6 +110,38 @@
       color: #1287A8;
       font-weight: bold;
     }
+
+    .general-analyze {
+      margin-bottom: 50px;
+    }
+
+    .general-analyze h3 {
+      margin-bottom: 10px;
+    }
+
+    .trends-list {
+      list-style-type: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .trends-list li {
+      margin-bottom: 5px;
+    }
+
+    .donut-plot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .behavior {
+      padding: 10px;
+      border-radius: 50%;
+      text-align: center;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -133,12 +165,31 @@
         <button :class="{ 'disabled': !keyword }" @click="search">Search</button>
       </div>
 
-      <div class="search-result" v-if="!loading && articles.length !== 0" >
-        <div class="search-result-item" v-for="article in articles" :key="article.title">
-          <a :href="article.link" target="_blank">{{ article.title }}</a>
-          <p>{{ article.description }}</p>
-          <p><strong>Source:</strong> {{ article.source }}</p>
-          <p><strong>Date:</strong> {{ article.date }}</p>
+      <div class="search-result" v-if="!loading && articles.length !== 0">
+        <!-- Відображення general_articles_analyze -->
+        <div class="general-analyze">
+          <h3>Топ-5 найбільш використованих слів</h3>
+          <ul class="trends-list">
+            <li v-for="trend in generalArticlesAnalyze.trends" :key="trend">{{ trend }}</li>
+          </ul>
+          <p><strong>Кількість знайдених постів за заданим словом:</strong> {{ generalArticlesAnalyze.count }}</p>
+          <div class="donut-plot">
+            <p>Статистика настроїв:</p>
+            <div class="behavior" v-for="(value, behavior) in generalArticlesAnalyze.general_behavior" :key="behavior" :style="{ backgroundColor: behaviorColors[behavior] }">
+              {{ behavior }}: {{ value }}%
+            </div>
+          </div>
+          <p><strong>Очікувана кількість постів з заданим словом на наступний тиждень:</strong> {{ generalArticlesAnalyze.prediction }}</p>
+        </div>
+
+        <!-- Відображення each_article_analyze -->
+        <div class="each-article-analyze">
+          <div class="search-result-item" v-for="article in articles" :key="article.title">
+            <a :href="article.link" target="_blank">{{ article.title }}</a>
+            <p>{{ article.description }}</p>
+            <p><strong>Source:</strong> {{ article.source }}</p>
+            <p><strong>Date:</strong> {{ article.date }}</p>
+          </div>
         </div>
       </div>
 
@@ -164,7 +215,15 @@
           selectedDateRange: '1 день',
           articles: [],
           searchBlockMargin: '250px',
-          loading: false
+          loading: false,
+          generalArticlesAnalyze: {},
+          behaviorColors: {
+            'Дуже поганий': '#FF0000',
+            'Негативний': '#FFA500',
+            'Нейтральний': '#FFFF00',
+            'Схвальний': '#00FF00',
+            'Позитивний': '#008000'
+          }
         };
       },
       methods: {
@@ -180,6 +239,7 @@
               const response = await fetch(url);
               const data = await response.json();
               console.log(data);
+              this.generalArticlesAnalyze = data.general_articles_analyze;
               this.articles = data.each_article_analyze;
 
               this.searchBlockMargin = '50px';

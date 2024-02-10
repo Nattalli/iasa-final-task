@@ -15,6 +15,6 @@ class ArticleSerializer(serializers.Serializer):
 
 class GeneralAnalysisSerializer(serializers.Serializer):
     trends = serializers.ListField(child=serializers.CharField())
-    general_behavior = serializers.CharField()
+    general_behavior = serializers.DictField()
     count = serializers.CharField()
     prediction = serializers.CharField()
