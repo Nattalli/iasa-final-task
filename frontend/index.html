@@ -150,10 +150,6 @@
       font-weight: bold;
     }
 
-    .general-analyze {
-      margin-bottom: 50px;
-    }
-
     .general-analyze h3 {
       margin-bottom: 10px;
     }
@@ -224,7 +220,7 @@
   <div id="app">
     <div class="container">
       <div class="search-block" :style="{ 'margin-top': searchBlockMargin }">
-        <img src="./src/assets/logo_hack.png" alt="Логотип" class="logo">
+        <img src="../src/assets/logo_hack.png" alt="Логотип" class="logo">
         <input type="text" v-model="keyword" placeholder="Keyword">
         <select v-model="selectedSource" @change="changeBackgroundColor">
           <option value="Google news">Google news</option>
@@ -284,7 +280,7 @@
       <div v-if="!loading && searchBlockMargin === '50px' && articles.length === 0">
         <div class="search-result">
           <p class="not-found">На жаль, по заданому слову нічого не було знайдено.</p>
-          <img src="./src/assets/nothing_found.png" alt="Not Found">
+          <img src="../src/assets/nothing_found.png" alt="Not Found">
         </div>
       </div>
 
@@ -322,12 +318,10 @@
             const encodedKeyword = encodeURIComponent(this.keyword);
             const encodedDateRange = encodeURIComponent(this.selectedDateRange);
             const encodedSource = encodeURIComponent(this.selectedSource);
-            const url = `http://0.0.0.0:8000/api/search/?keyword=${encodedKeyword}&date_range=${encodedDateRange}&source=${encodedSource}`;
-            console.log(1, url);
+            const url = `http://localhost:8000/api/search/?keyword=${encodedKeyword}&date_range=${encodedDateRange}&source=${encodedSource}`;
             try {
               const response = await fetch(url);
               const data = await response.json();
-              console.log(data);
               this.generalArticlesAnalyze = data.general_articles_analyze;
               this.articles = data.each_article_analyze;
 

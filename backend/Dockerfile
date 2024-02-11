@@ -10,6 +10,8 @@ COPY requirements.txt /backend/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
+RUN python -m nltk.downloader punkt
+
 COPY . /backend
 
 EXPOSE 8000
