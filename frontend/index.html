@@ -224,9 +224,7 @@
         <input type="text" v-model="keyword" placeholder="Keyword">
         <select v-model="selectedSource" @change="changeBackgroundColor">
           <option value="Google news">Google news</option>
-          <option value="dou">dou</option>
-          <option value="tsn">tsn</option>
-          <option value="test">test</option>
+          <option value="ТСН">ТСН</option>
         </select>
         <select v-model="selectedDateRange">
           <option value="1 день">1 день</option>
@@ -342,14 +340,8 @@
             case 'Google news':
               document.body.style.backgroundColor = '#D3B53D';
               break;
-            case 'dou':
-              document.body.style.backgroundColor = '#0C374D';
-              break;
-            case 'tsn':
+            case 'ТСН':
               document.body.style.backgroundColor = '#AD2A1A';
-              break;
-            case 'test':
-              document.body.style.backgroundColor = '#93A661';
               break;
             default:
               document.body.style.backgroundColor = '#1496BB';

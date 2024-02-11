@@ -5,13 +5,13 @@ from nltk.tokenize import word_tokenize
 from textblob import TextBlob
 
 
-def load_stop_words(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        stop_words = set(word.strip() for word in file.readlines())
-    return stop_words
-
-
-stop_words = load_stop_words('parsers/stop_words.txt')
+# def load_stop_words(file_path):
+#     with open(file_path, 'r', encoding='utf-8') as file:
+#         stop_words = set(word.strip() for word in file.readlines())
+#     return stop_words
+#
+#
+# stop_words = load_stop_words('parsers/stop_words.txt')
 
 
 def calculate_date(today, choice):
@@ -45,7 +45,7 @@ def analyze_articles(articles):
             content = ''
 
         text = title + ' ' + description + ' ' + content
-        words = [word.lower() for word in word_tokenize(text) if word.isalnum() and word.lower() not in stop_words]
+        words = [word.lower() for word in word_tokenize(text) if word.isalnum()]
         word_freq = Counter(words)
 
         top_keywords = word_freq.most_common(5)

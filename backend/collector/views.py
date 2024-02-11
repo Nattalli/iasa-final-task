@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from collector.serializers import GeneralAnalysisSerializer, ArticleSerializer
+from parsers.tsn import parse_tsn_search_results
 from parsers.google_news import get_news_articles
 from parsers.utils import translate_sentiment, analyze_articles, calculate_date
 
@@ -13,8 +14,12 @@ from parsers.utils import translate_sentiment, analyze_articles, calculate_date
 def search_articles(request):
     search_keyword = request.query_params.get('keyword', '')
     date_range = request.query_params.get('date_range', '')
+    source = request.query_params.get('source', '')
 
-    search_articles = get_news_articles(search_keyword, date_range)
+    if source == 'ТСН':
+        search_articles = parse_tsn_search_results(search_keyword, date_range)
+    else:
+        search_articles = get_news_articles(search_keyword, date_range)
 
     keywords, sentiments, patterns = analyze_articles(search_articles)
 
