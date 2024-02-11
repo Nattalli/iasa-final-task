@@ -225,6 +225,7 @@
         <select v-model="selectedSource" @change="changeBackgroundColor">
           <option value="Google news">Google news</option>
           <option value="ТСН">ТСН</option>
+          <option value="BBC News">BBC News</option>
         </select>
         <select v-model="selectedDateRange">
           <option value="1 день">1 день</option>
@@ -338,13 +339,16 @@
         changeBackgroundColor() {
           switch (this.selectedSource) {
             case 'Google news':
-              document.body.style.backgroundColor = '#D3B53D';
+              document.body.style.backgroundColor = '#EBC944';
               break;
             case 'ТСН':
-              document.body.style.backgroundColor = '#AD2A1A';
+              document.body.style.backgroundColor = '#CD594A';
+              break;
+            case 'BBC News':
+              document.body.style.backgroundColor = '#3C6478';
               break;
             default:
-              document.body.style.backgroundColor = '#1496BB';
+              document.body.style.backgroundColor = '#43ABC9';
           }
         },
         updateDonutChart() {

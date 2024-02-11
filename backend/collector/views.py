@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from collector.serializers import GeneralAnalysisSerializer, ArticleSerializer
+from parsers.bbc_news import parse_bbc_news
 from parsers.tsn import parse_tsn_search_results
 from parsers.google_news import get_news_articles
 from parsers.utils import translate_sentiment, analyze_articles, calculate_date
@@ -18,6 +19,8 @@ def search_articles(request):
 
     if source == 'ТСН':
         search_articles = parse_tsn_search_results(search_keyword, date_range)
+    elif source == 'BBC News':
+        search_articles = parse_bbc_news(search_keyword, date_range)
     else:
         search_articles = get_news_articles(search_keyword, date_range)
 
