@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 from parameterized import parameterized
-from parsers.utils import calculate_date, load_stop_words, translate_sentiment, analyze_articles
+from parsers.utils import calculate_date, translate_sentiment, analyze_articles
 
 
 class TestCalculateDate(unittest.TestCase):
@@ -19,17 +19,6 @@ class TestCalculateDate(unittest.TestCase):
     ])
     def test_invalid_choice(self, today, choice):
         self.assertIsNone(calculate_date(today, choice))
-
-
-class TestLoadStopWords(unittest.TestCase):
-    def test_load_stop_words(self):
-        file_path = "parsers/stop_words.txt"
-        stop_words = load_stop_words(file_path)
-        self.assertIsInstance(stop_words, set)
-        self.assertTrue(len(stop_words) > 0)
-
-        expected_stop_words = {"вона", "вони", "та", "у", "and", "or"}
-        self.assertTrue(all(word in stop_words for word in expected_stop_words))
 
 
 class TestTranslateSentiment(unittest.TestCase):
