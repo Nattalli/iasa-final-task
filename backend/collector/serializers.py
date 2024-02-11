@@ -17,5 +17,4 @@ class GeneralAnalysisSerializer(serializers.Serializer):
     trends = serializers.ListField(child=serializers.CharField())
     general_behavior = serializers.DictField()
     count = serializers.CharField()
-    prediction = serializers.CharField()
     daily_word_usage = serializers.DictField()

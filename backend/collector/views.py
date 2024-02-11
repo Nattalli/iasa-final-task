@@ -7,7 +7,6 @@ from rest_framework.response import Response
 from collector.serializers import GeneralAnalysisSerializer, ArticleSerializer
 from parsers.google_news import get_news_articles
 from parsers.utils import translate_sentiment, analyze_articles, calculate_date
-from statsmodels.tsa.arima.model import ARIMA
 
 
 @api_view(['GET'])
@@ -24,20 +23,6 @@ def search_articles(request):
     trends = [keyword[0] for keyword in top_trends if keyword[0] != search_keyword][:5]
 
     current_count = len(search_articles)
-
-    if current_count <= 5:
-        prediction = 'Less then 5'
-    else:
-        dates = [article.get('publishedAt', '') for article in search_articles]
-        daily_counts = Counter([date.split('T')[0] for date in dates])
-
-        if len(daily_counts.values()) <= 5:
-            prediction = 'Less than 5'
-        else:
-            model = ARIMA(list(daily_counts.values()), order=(5, 1, 0))
-            model_fit = model.fit()
-
-            prediction = int(model_fit.forecast()[0])
 
     sentiment_counts = Counter(sentiments)
     total_sentiments = len(sentiments)
@@ -61,7 +46,6 @@ def search_articles(request):
         "trends": trends,
         "general_behavior": normalized_sentiment_percentages,
         "count": current_count,
-        "prediction": prediction,
         "daily_word_usage": daily_word_usage,
     }
     general_analysis_serializer = GeneralAnalysisSerializer(general_analysis_data)
