@@ -25,7 +25,6 @@ def search_articles(request):
         search_articles = get_news_articles(search_keyword, date_range)
 
     keywords, sentiments, patterns = analyze_articles(search_articles)
-
     all_keywords = [keyword for article_keywords in keywords for keyword in article_keywords]
     top_trends = Counter(all_keywords).most_common(6)
     trends = [keyword[0] for keyword in top_trends if keyword[0] != search_keyword][:5]

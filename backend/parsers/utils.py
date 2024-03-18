@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from nltk.tokenize import word_tokenize
 from textblob import TextBlob
+
 from parsers.constants import STOP_WORDS
 
 
